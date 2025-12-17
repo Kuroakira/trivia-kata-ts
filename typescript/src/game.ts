@@ -1,3 +1,11 @@
+/**
+ * リファクタリングの方針
+ * 今現状Gameクラスが多くの責務を持っているので、責務を分離していく
+ * まずは大きいメソッドのロジックを整理して、まずはロジックの見通しをよくする
+ * その後カプセル化して、if文を消す
+ * 状態遷移を管理するクラスを作成し、Gameクラスはそのクラスを利用するだけにする
+ */
+
 export class Game {
 
     private players: Array<string> = [];
@@ -26,6 +34,7 @@ export class Game {
         return "Rock Question " + index;
     }
 
+    // TODO: the add method is not void, it return a boolean.
     public add(name: string): boolean {
         this.players.push(name);
         this.places[this.howManyPlayers()] = 0;
@@ -42,20 +51,21 @@ export class Game {
         return this.players.length;
     }
 
+    // TODO: the roll method is not very good, it should be refactored to be more readable and maintainable.
     public roll(roll: number) {
         console.log(this.players[this.currentPlayer] + " is the current player");
         console.log("They have rolled a " + roll);
-    
+
         if (this.inPenaltyBox[this.currentPlayer]) {
           if (roll % 2 != 0) {
             this.isGettingOutOfPenaltyBox = true;
-    
+
             console.log(this.players[this.currentPlayer] + " is getting out of the penalty box");
             this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
             if (this.places[this.currentPlayer] > 11) {
               this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
             }
-    
+
             console.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
             console.log("The category is " + this.currentCategory());
             this.askQuestion();
@@ -64,18 +74,19 @@ export class Game {
             this.isGettingOutOfPenaltyBox = false;
           }
         } else {
-    
+
           this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
           if (this.places[this.currentPlayer] > 11) {
             this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
           }
-    
+
           console.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
           console.log("The category is " + this.currentCategory());
           this.askQuestion();
         }
     }
 
+    // TODO: The categories can be refactored using Categories Class.
     private askQuestion(): void {
         if (this.currentCategory() == 'Pop')
             console.log(this.popQuestions.shift());
@@ -117,13 +128,14 @@ export class Game {
         console.log('Question was incorrectly answered');
         console.log(this.players[this.currentPlayer] + " was sent to the penalty box");
         this.inPenaltyBox[this.currentPlayer] = true;
-    
+
         this.currentPlayer += 1;
         if (this.currentPlayer == this.players.length)
             this.currentPlayer = 0;
         return true;
     }
 
+    // TODO: The wasCorrectlyAnswered method is not very good, it should be refactored to be more readable and maintainable.
     public wasCorrectlyAnswered(): boolean {
         if (this.inPenaltyBox[this.currentPlayer]) {
             if (this.isGettingOutOfPenaltyBox) {
@@ -131,12 +143,12 @@ export class Game {
               this.purses[this.currentPlayer] += 1;
               console.log(this.players[this.currentPlayer] + " now has " +
               this.purses[this.currentPlayer] + " Gold Coins.");
-      
+
               var winner = this.didPlayerWin();
               this.currentPlayer += 1;
               if (this.currentPlayer == this.players.length)
                 this.currentPlayer = 0;
-      
+
               return winner;
             } else {
               this.currentPlayer += 1;
@@ -144,22 +156,22 @@ export class Game {
                 this.currentPlayer = 0;
               return true;
             }
-      
-      
+
+
           } else {
-      
+
             console.log("Answer was corrent!!!!");
-      
+
             this.purses[this.currentPlayer] += 1;
             console.log(this.players[this.currentPlayer] + " now has " +
                 this.purses[this.currentPlayer] + " Gold Coins.");
-      
+
             var winner = this.didPlayerWin();
-      
+
             this.currentPlayer += 1;
             if (this.currentPlayer == this.players.length)
                 this.currentPlayer = 0;
-      
+
             return winner;
           }
     }
