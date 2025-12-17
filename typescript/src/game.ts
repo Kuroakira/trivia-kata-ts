@@ -57,24 +57,16 @@ export class Game {
         console.log("They have rolled a " + roll);
 
         if (this.inPenaltyBox[this.currentPlayer]) {
-          if (roll % 2 != 0) {
-            this.isGettingOutOfPenaltyBox = true;
 
-            console.log(this.players[this.currentPlayer] + " is getting out of the penalty box");
-            this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
-            if (this.places[this.currentPlayer] > 11) {
-              this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
-            }
-
-            console.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
-            console.log("The category is " + this.currentCategory());
-            this.askQuestion();
-          } else {
+          if (roll % 2 === 0) {
             console.log(this.players[this.currentPlayer] + " is not getting out of the penalty box");
             this.isGettingOutOfPenaltyBox = false;
+            return;
           }
-        } else {
 
+          this.isGettingOutOfPenaltyBox = true;
+
+          console.log(this.players[this.currentPlayer] + " is getting out of the penalty box");
           this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
           if (this.places[this.currentPlayer] > 11) {
             this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
@@ -83,7 +75,17 @@ export class Game {
           console.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
           console.log("The category is " + this.currentCategory());
           this.askQuestion();
+          return;
         }
+
+        this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
+        if (this.places[this.currentPlayer] > 11) {
+          this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
+        }
+
+        console.log(this.players[this.currentPlayer] + "'s new location is " + this.places[this.currentPlayer]);
+        console.log("The category is " + this.currentCategory());
+        this.askQuestion();
     }
 
     // TODO: The categories can be refactored using Categories Class.
@@ -150,13 +152,11 @@ export class Game {
                 this.currentPlayer = 0;
 
               return winner;
-            } else {
-              this.currentPlayer += 1;
-              if (this.currentPlayer == this.players.length)
-                this.currentPlayer = 0;
-              return true;
             }
-
+            this.currentPlayer += 1;
+            if (this.currentPlayer == this.players.length)
+              this.currentPlayer = 0;
+            return true;
 
           } else {
 
