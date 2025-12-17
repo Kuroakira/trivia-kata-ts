@@ -10,18 +10,17 @@ export class GameRunner {
         let notAWinner;
         do {
 
-            game.roll(Math.floor(Math.random() * 6) + 1);
-        
-            if (Math.floor(Math.random() * 10) == 7) {
+            game.roll(Math.floor(0.5 * 6) + 1);
+
+            if (Math.floor(0.5 * 10) == 7) {
             notAWinner = game.wrongAnswer();
             } else {
             notAWinner = game.wasCorrectlyAnswered();
             }
-        
+
         } while (notAWinner);
     }
 }
 
 GameRunner.main();
 
-  
